@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lectura Integrada — Protocolo de reestructuración narrativa asistida</title>
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='4' fill='%230d0f14'/%3E%3Cpath d='M5 11 Q8 8 11 11 Q14 14 17 11 Q20 8 23 11 Q26 14 27 11' stroke='%237a8fa0' stroke-width='1.6' fill='none' stroke-linecap='round' opacity='0.95'/%3E%3Cpath d='M5 18 Q7.5 15.5 10 18 Q12.5 20.5 15 18 Q17.5 15.5 20 18 Q22.5 20.5 27 17' stroke='%237a8fa0' stroke-width='1.6' fill='none' stroke-linecap='round' opacity='0.55'/%3E%3Cpath d='M5 24 Q8.5 22 12 24 Q15.5 26 19 24 Q22 22.5 27 24' stroke='%237a8fa0' stroke-width='1.6' fill='none' stroke-linecap='round' opacity='0.25'/%3E%3C/svg%3E">
+<link rel="icon" href="favicon.ico">
+<link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
+<link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+:root{
+--bg:#0d0f14;
+--bg-card:rgba(255,255,255,0.022);
+--bg-card-hover:rgba(255,255,255,0.04);
+--text:#dddde6;
+--text-muted:#848898;
+--text-dim:#4a4d5a;
+--accent:#7a8fa0;
+--accent-rgb:122,143,160;
+--accent-soft:rgba(122,143,160,0.10);
+--accent-glow:rgba(122,143,160,0.028);
+--serif:'Cormorant Garamond',Georgia,serif;
+--sans:'DM Sans','Helvetica Neue',sans-serif;
+}
+html{scroll-behavior:smooth;font-size:16px}
+body{background:var(--bg);color:var(--text);font-family:var(--sans);line-height:1.7;overflow-x:hidden}
+::selection{background:var(--accent);color:var(--bg)}
+
+/* NAV */
+nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:1.5rem 3rem;display:flex;justify-content:space-between;align-items:center;backdrop-filter:blur(20px);background:rgba(13,15,20,0.82);transition:all 0.4s}
+nav.scrolled{padding:1rem 3rem;background:rgba(13,15,20,0.97)}
+.nav-brand{font-family:var(--serif);font-size:1.1rem;font-weight:400;letter-spacing:0.18em;color:var(--accent);text-decoration:none;text-transform:uppercase}
+.nav-links{display:flex;gap:2.5rem;list-style:none;align-items:center}
+.nav-links a{color:var(--text-muted);text-decoration:none;font-size:0.75rem;letter-spacing:0.12em;text-transform:uppercase;font-weight:400;transition:color 0.3s}
+.nav-links a:hover{color:var(--text)}
+.nav-links .nav-back{color:var(--text-dim);font-size:0.68rem}
+.nav-links .nav-back:hover{color:var(--accent)}
+.hamburger{display:none;flex-direction:column;gap:5px;cursor:pointer;padding:4px;z-index:201;background:none;border:none}
+.hamburger span{display:block;width:22px;height:1.5px;background:var(--accent);transition:all 0.3s}
+.hamburger.active span:nth-child(1){transform:rotate(45deg) translate(4.5px,4.5px)}
+.hamburger.active span:nth-child(2){opacity:0}
+.hamburger.active span:nth-child(3){transform:rotate(-45deg) translate(4.5px,-4.5px)}
+
+@media(max-width:768px){
+.hamburger{display:flex}
+.nav-links{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(13,15,20,1);flex-direction:column;justify-content:center;align-items:center;gap:3rem;opacity:0;pointer-events:none;transition:opacity 0.4s;z-index:200}
+.nav-links.open{opacity:1;pointer-events:all}
+.nav-links a{font-size:1rem;letter-spacing:0.15em}
+nav{padding:1rem 1.5rem}
+.hero{padding:2rem 1.5rem}
+.content{padding:0 1.5rem}
+.two-col{grid-template-columns:1fr !important}
+.footer-cols{flex-direction:column;gap:2rem;text-align:center !important}
+.footer-cols>div{text-align:center !important}
+}
+
+/* HERO */
+.hero{min-height:100vh;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;position:relative;padding:2rem 3rem;overflow:hidden}
+.hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 50% 55%, var(--accent-glow) 0%, transparent 68%);pointer-events:none}
+/* subtle horizontal rule decoration */
+.hero::after{content:'';position:absolute;bottom:0;left:50%;transform:translateX(-50%);width:1px;height:80px;background:linear-gradient(to bottom,rgba(122,143,160,0.18),transparent)}
+.hero-label{font-size:0.62rem;letter-spacing:0.4em;text-transform:uppercase;color:var(--accent);margin-bottom:2.2rem;opacity:0;animation:fadeIn 1.4s ease 0.2s forwards}
+.hero-title{font-family:var(--serif);font-size:clamp(2.8rem,8vw,6rem);font-weight:300;letter-spacing:0.08em;color:var(--text);line-height:1.05;margin-bottom:0.6rem;opacity:0;animation:fadeUp 1.5s ease 0.4s forwards}
+.hero-title em{font-style:italic;font-weight:300;color:rgba(var(--accent-rgb),0.7)}
+.hero-divider{width:40px;height:1px;background:var(--accent);margin:1.8rem auto;opacity:0.35;opacity:0;animation:fadeIn 1.5s ease 0.9s forwards}
+.hero-sub{font-size:0.88rem;font-weight:300;color:var(--text-muted);letter-spacing:0.04em;max-width:480px;opacity:0;animation:fadeIn 1.5s ease 1.1s forwards;line-height:1.9}
+.hero-scroll{position:absolute;bottom:3rem;display:flex;flex-direction:column;align-items:center;gap:0.8rem;opacity:0;animation:fadeIn 2s ease 2s forwards}
+.hero-scroll span{font-size:0.58rem;letter-spacing:0.22em;text-transform:uppercase;color:var(--text-dim)}
+.scroll-line{width:1px;height:36px;background:linear-gradient(to bottom,rgba(var(--accent-rgb),0.5),transparent);animation:pulse 2.2s ease-in-out infinite}
+
+/* CONTENT */
+.content{max-width:960px;margin:0 auto;padding:0 3rem}
+
+/* SECTION */
+.section{padding:6rem 0}
+.section-label{font-size:0.62rem;letter-spacing:0.32em;text-transform:uppercase;color:var(--accent);margin-bottom:1.5rem;opacity:0.8}
+.section-title{font-family:var(--serif);font-size:clamp(1.7rem,3.5vw,2.4rem);font-weight:300;line-height:1.3;margin-bottom:1.8rem;color:var(--text)}
+.section-body{color:var(--text-muted);font-size:0.92rem;line-height:1.95;max-width:620px}
+.section-body p+p{margin-top:1.4rem}
+
+/* SEP */
+.sep{width:100%;height:1px;background:linear-gradient(90deg,transparent,rgba(var(--accent-rgb),0.1),transparent)}
+
+/* FEATURE BLOCKS — three-column */
+.features{display:grid;grid-template-columns:repeat(3,1fr);gap:1.5rem;margin-top:3rem}
+@media(max-width:768px){.features{grid-template-columns:1fr}}
+.feature{padding:2rem 1.8rem;background:var(--bg-card);border:1px solid rgba(255,255,255,0.035);border-radius:2px;transition:border-color 0.4s,background 0.4s}
+.feature:hover{border-color:rgba(var(--accent-rgb),0.18);background:var(--bg-card-hover)}
+.feature-num{font-family:var(--serif);font-size:2.2rem;font-weight:300;color:rgba(var(--accent-rgb),0.25);line-height:1;margin-bottom:1rem}
+.feature-title{font-size:0.78rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--text);margin-bottom:0.8rem;font-weight:400}
+.feature-body{font-size:0.82rem;color:var(--text-muted);line-height:1.85}
+
+/* TWO COL */
+.two-col{display:grid;grid-template-columns:3fr 2fr;gap:4rem;align-items:start;margin-top:2rem}
+.aside-box{padding:2rem;background:var(--bg-card);border:1px solid rgba(255,255,255,0.035);border-radius:2px}
+.aside-label{font-size:0.58rem;letter-spacing:0.22em;text-transform:uppercase;color:var(--accent);margin-bottom:1.4rem;opacity:0.8}
+.aside-item{padding:1rem 0;border-bottom:1px solid rgba(255,255,255,0.03)}
+.aside-item:last-child{border-bottom:none;padding-bottom:0}
+.aside-item-title{font-size:0.8rem;color:var(--text);font-weight:400;margin-bottom:0.3rem}
+.aside-item-body{font-size:0.75rem;color:var(--text-muted);line-height:1.7}
+
+/* STATUS BANNER */
+.status-banner{margin-top:2.5rem;padding:1.5rem 2rem;background:rgba(var(--accent-rgb),0.05);border:1px solid rgba(var(--accent-rgb),0.12);border-radius:2px;display:flex;align-items:flex-start;gap:1.2rem}
+.status-dot{width:6px;height:6px;border-radius:50%;background:var(--accent);margin-top:0.45rem;flex-shrink:0;opacity:0.7}
+.status-text{font-size:0.8rem;color:var(--text-muted);line-height:1.8}
+.status-text strong{color:var(--text);font-weight:400}
+
+/* CONTACT */
+.contact{text-align:center;padding:8rem 0}
+.contact-email{font-family:var(--serif);font-size:1.25rem;font-weight:300;color:var(--accent);text-decoration:none;letter-spacing:0.04em;transition:opacity 0.3s}
+.contact-email:hover{opacity:0.65}
+.contact-note{margin-top:0.8rem;font-size:0.78rem;color:var(--text-dim)}
+.back-link{display:inline-block;margin-top:2.5rem;font-size:0.72rem;letter-spacing:0.14em;text-transform:uppercase;color:var(--text-dim);text-decoration:none;transition:color 0.3s}
+.back-link:hover{color:var(--accent)}
+
+/* FOOTER */
+footer{padding:3rem;border-top:1px solid rgba(255,255,255,0.03)}
+.footer-cols{display:flex;justify-content:space-between;align-items:flex-start;max-width:960px;margin:0 auto;font-size:0.65rem;color:var(--text-dim);letter-spacing:0.08em}
+.footer-cols a{color:var(--text-dim);text-decoration:none;transition:color 0.3s}
+.footer-cols a:hover{color:var(--accent)}
+.footer-cols p+p{margin-top:0.4rem}
+
+/* ANIMATIONS */
+@keyframes fadeUp{from{opacity:0;transform:translateY(22px)}to{opacity:1;transform:translateY(0)}}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+@keyframes pulse{0%,100%{opacity:0.25}50%{opacity:0.7}}
+.reveal{opacity:0;transform:translateY(28px);transition:all 0.85s cubic-bezier(0.23,1,0.32,1)}
+.reveal.visible{opacity:1;transform:translateY(0)}
+</style>
+</head>
+<body>
+
+<nav id="navbar">
+<a href="#" class="nav-brand">Lectura Integrada</a>
+<button class="hamburger" id="hamburger" aria-label="Menú">
+<span></span><span></span><span></span>
+</button>
+<ul class="nav-links" id="navLinks">
+<li><a href="#protocolo">Protocolo</a></li>
+<li><a href="#estado">Estado</a></li>
+<li><a href="#contacto">Contacto</a></li>
+<li><a href="https://derwald.es" class="nav-back">← Der Wald™</a></li>
+</ul>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+<p class="hero-label">Protocolo de investigación · Der Wald™</p>
+<h1 class="hero-title">Lectura<br><em>Integrada</em></h1>
+<div class="hero-divider"></div>
+<p class="hero-sub">Reestructuración narrativa asistida por inteligencia artificial. Complementario a la intervención psicoterapéutica.</p>
+<div class="hero-scroll">
+<span>Conocer más</span>
+<div class="scroll-line"></div>
+</div>
+</section>
+
+<div class="content">
+
+<!-- QUÉ ES -->
+<section class="section reveal" id="protocolo">
+<p class="section-label">El protocolo</p>
+<h2 class="section-title">Qué es la Lectura Integrada</h2>
+<div class="two-col">
+<div class="section-body">
+<p>La Lectura Integrada es un protocolo de registro y procesamiento que cruza, con asistencia de un modelo de lenguaje, el contenido fenomenológico de los estados hipnagógicos e hipnopómpicos con un diario reflexivo personal.</p>
+<p>La transición entre la vigilia y el sueño genera espontáneamente imágenes, voces y secuencias que escapan al control voluntario. Ese material — transcrito con inmediatez y sistematicidad — constituye la materia prima del protocolo.</p>
+<p>El cruce con el diario produce una síntesis interpretativa de la que se deriva una afirmación-prime para la jornada siguiente, cerrando un bucle de retroalimentación. El objetivo es contribuir a la identificación de patrones de procesamiento que normalmente permanecen fuera del discurso consciente.</p>
+<p>El protocolo es complementario a la intervención psicoterapéutica y no la sustituye. No es un producto terapéutico terminado.</p>
+</div>
+<div>
+<div class="aside-box">
+<p class="aside-label">Elementos del cruce</p>
+<div class="aside-item">
+<p class="aside-item-title">Estados hipnagógicos e hipnopómpicos</p>
+<p class="aside-item-body">Contenido espontáneo de la transición vigilia-sueño: imágenes, voces, melodías, secuencias. Transcrito con inmediatez.</p>
+</div>
+<div class="aside-item">
+<p class="aside-item-title">Diario reflexivo</p>
+<p class="aside-item-body">Registro escrito diario del estado físico y emocional, con narrativa libre.</p>
+</div>
+<div class="aside-item">
+<p class="aside-item-title">Síntesis con IA</p>
+<p class="aside-item-body">Un modelo de lenguaje asiste en la identificación de correspondencias temáticas entre ambos registros.</p>
+</div>
+<div class="aside-item">
+<p class="aside-item-title">Afirmación-prime</p>
+<p class="aside-item-body">Derivada de la síntesis. Actúa como sankalpa semilla para la siguiente sesión de práctica liminal.</p>
+</div>
+</div>
+</div>
+</div>
+</section>
+
+<div class="sep"></div>
+
+<!-- TRES PILARES -->
+<section class="section reveal" id="pilares">
+<p class="section-label">Fundamento</p>
+<h2 class="section-title">Tres ejes del protocolo</h2>
+<div class="features">
+<div class="feature">
+<p class="feature-num">01</p>
+<p class="feature-title">Captura sistemática</p>
+<p class="feature-body">El material hipnagógico se registra de forma inmediata, en voz, sin elaboración posterior. La sistematicidad es condición de fiabilidad del corpus.</p>
+</div>
+<div class="feature">
+<p class="feature-num">02</p>
+<p class="feature-title">Cruce asistido</p>
+<p class="feature-body">La inteligencia artificial no interpreta: detecta correspondencias temáticas entre registros que el sujeto puede no percibir en el discurso consciente.</p>
+</div>
+<div class="feature">
+<p class="feature-num">03</p>
+<p class="feature-title">Bucle de retroalimentación</p>
+<p class="feature-body">La afirmación-prime derivada de la síntesis actúa como intención prospectiva para la siguiente sesión, cerrando el ciclo.</p>
+</div>
+</div>
+</section>
+
+<div class="sep"></div>
+
+<!-- ESTADO DEL PROYECTO -->
+<section class="section reveal" id="estado">
+<p class="section-label">Estado del proyecto</p>
+<h2 class="section-title">Exploratorio, no causal</h2>
+<div class="section-body">
+<p>El protocolo se ha aplicado durante más de un año en un estudio exploratorio intrasujeto. La metodología sigue las directrices SCRIBE 2016 para el reporte de intervenciones conductuales en caso único, con transparencia explícita sobre sus limitaciones.</p>
+<p>Los resultados son exploratorios. No se establecen relaciones causales. El diseño intrasujeto no permite generalizar sin estudios posteriores con múltiples sujetos y supervisión clínica independiente.</p>
+</div>
+<div class="status-banner">
+<div class="status-dot"></div>
+<p class="status-text"><strong>Libro Blanco sometido a lectura crítica clínica independiente.</strong> El documento recoge el marco metodológico, los fundamentos teóricos y los resultados del estudio exploratorio. Se ha sometido a revisión crítica independiente antes de su difusión. Registro solicitado en el Registro de la Propiedad Intelectual (RPI).</p>
+</div>
+</section>
+
+<div class="sep"></div>
+
+<!-- CONTACTO -->
+<section class="contact reveal" id="contacto">
+<p class="section-label" style="text-align:center">Contacto</p>
+<h2 class="section-title" style="text-align:center">Preguntas o colaboración</h2>
+<a href="mailto:contacto@derwald.es" class="contact-email">contacto@derwald.es</a>
+<p class="contact-note">Sin prisa. Sin filtros.</p>
+<a href="https://derwald.es" class="back-link">← Volver a Der Wald™</a>
+</section>
+
+</div>
+
+<!-- FOOTER -->
+<footer>
+<div class="footer-cols">
+<div>
+<p>© 2026 Lectura Integrada</p>
+<p>Un proyecto de <a href="https://derwald.es">Der Wald™</a></p>
+<p style="margin-top:0.8rem;font-size:0.6rem;opacity:0.55">Libro Blanco con registro solicitado en el RPI. Resultados exploratorios, no causales.<br>Der Wald™ (cl. 41, 42, 44) · Hedera™ (cl. 9, 41) · Bricolaje Sonoro™ (cl. 41) — marcas solicitadas en OEPM.</p>
+</div>
+<div style="text-align:right">
+<p><a href="https://derwald.es">derwald.es</a></p>
+<p><a href="https://bricolajesonoro.es">bricolajesonoro.es</a></p>
+<p><a href="https://hederamusica.es">hederamusica.es</a></p>
+</div>
+</div>
+</footer>
+
+<script>
+const nav=document.getElementById('navbar');
+window.addEventListener('scroll',()=>{nav.classList.toggle('scrolled',window.scrollY>80)});
+
+const reveals=document.querySelectorAll('.reveal');
+const observer=new IntersectionObserver((entries)=>{
+entries.forEach(e=>{if(e.isIntersecting){e.target.classList.add('visible');observer.unobserve(e.target)}});
+},{threshold:0.1});
+reveals.forEach(r=>observer.observe(r));
+
+document.querySelectorAll('a[href^="#"]').forEach(a=>{
+a.addEventListener('click',e=>{
+e.preventDefault();
+const href=a.getAttribute('href');
+if(href==='#'){window.scrollTo({top:0,behavior:'smooth'})}
+else{const t=document.querySelector(href);if(t)t.scrollIntoView({behavior:'smooth'})}
+document.getElementById('hamburger').classList.remove('active');
+document.getElementById('navLinks').classList.remove('open');
+});
+});
+
+const hamburger=document.getElementById('hamburger');
+const navLinks=document.getElementById('navLinks');
+hamburger.addEventListener('click',()=>{
+hamburger.classList.toggle('active');
+navLinks.classList.toggle('open');
+});
+</script>
+</body>
+</html>
